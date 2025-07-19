@@ -1,18 +1,22 @@
-name: Super-Linter
+name: Docker Build
 
-on: push
+on:
+  push:
+    branches: [main]
 
 jobs:
-  super-lint:
-    name: Lint code base
+  build:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx@v3
+
+      - name: Build Docker image
+        run: docker build -t my-app .
+
+      - name: Run container
+        run: docker run -d -p 3000:3000 my-app
         
-      - name: Run Super-Linter
-        uses: github/super-linter@v3
-        env: 
-          DEFAULT_BRANCH: main
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      
